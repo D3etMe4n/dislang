@@ -1,0 +1,9 @@
+{
+  "ui": {
+    "waiting": "⏳ Thingking",
+    "error": "Error happended"
+  },
+  "prompts": {
+    "system": "You are a fucking bot"
+  }
+}
