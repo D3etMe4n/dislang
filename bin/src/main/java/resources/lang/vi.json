@@ -1,9 +1,0 @@
-{
-  "ui": {
-    "waiting": "⏳ Đang suy nghĩ...",
-    "error": "Có lỗi xảy ra!"
-  },
-  "prompts": {
-    "system": "Bạn là trợ lý ảo hữu ích."
-  }
-}
