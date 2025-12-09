@@ -12,7 +12,7 @@ public class LocalizationService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
-        load("vn");
+        load("vi");
         load("en");
         load("jp");
     }

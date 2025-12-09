@@ -1,6 +1,7 @@
 package com.dislang.service.ai.impl;
 
 import com.dislang.service.ai.IAIService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,7 +17,7 @@ public class DeepSeekService implements IAIService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
     private static final String URL =
-        "https://api.deepseek.com/v1/chat/completions"; // Check URL chuẩn của DeepSeek
+        "https://api.deepseek.com/v1/chat/completions";
 
     public DeepSeekService(String apiKey) {
         this.apiKey = apiKey;
@@ -50,8 +51,39 @@ public class DeepSeekService implements IAIService {
                 )
                 .thenApply(HttpResponse::body)
                 .thenAccept(response -> {
-                    // TODO: Parse this json before call
-                    callback.accept("DeepSeek: " + response);
+                    try {
+                        JsonNode responseNode = mapper.readTree(response);
+
+                        if (responseNode.has("error")) {
+                            String errorMsg = responseNode
+                                .get("error")
+                                .get("message")
+                                .asText();
+                            callback.accept("❌ DeepSeek Error: " + errorMsg);
+                            return;
+                        }
+
+                        // Extract choices[0] -> message -> content
+                        if (
+                            responseNode.has("choices") &&
+                            !responseNode.get("choices").isEmpty()
+                        ) {
+                            String content = responseNode
+                                .get("choices")
+                                .get(0)
+                                .get("message")
+                                .get("content")
+                                .asText();
+                            callback.accept(content); // Return clean content
+                        } else {
+                            callback.accept(
+                                "⚠️ AI không trả lời (Empty response)."
+                            );
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callback.accept("❌ Lỗi xử lý JSON: " + e.getMessage());
+                    }
                 });
         } catch (Exception e) {
             callback.accept("Lỗi gọi API: " + e.getMessage());

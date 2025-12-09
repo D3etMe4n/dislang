@@ -30,7 +30,7 @@ public class AskCommand extends CommandBase {
     public void handle(SlashCommandInteractionEvent event) {
         String question = event.getOption("question").getAsString();
 
-        String watitingMsg = LocalizationService.get("vn", "ui.waiting");
+        String watitingMsg = LocalizationService.get("vi", "ui.waiting");
 
         event.reply(watitingMsg).queue();
 
