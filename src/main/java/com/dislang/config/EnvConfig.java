@@ -10,6 +10,6 @@ public class EnvConfig {
 
     public static String get(String key) {
         String value = System.getenv(key);
-        return value;
+        return (value != null) ? value : DOTENV.get(key);
     }
 }
