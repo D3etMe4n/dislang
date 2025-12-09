@@ -34,7 +34,7 @@ public class AskCommand extends CommandBase {
 
         event.reply(watitingMsg).queue();
 
-        router.ask("deepseek", question, response -> {
+        router.ask("gemini", question, response -> {
             event.getHook().sendMessage(response).queue();
         });
     }

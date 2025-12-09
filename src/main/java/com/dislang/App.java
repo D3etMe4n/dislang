@@ -18,9 +18,12 @@ public class App extends ListenerAdapter {
 
     public static void main(String[] args) {
         String deepSeekKey = EnvConfig.get("OPENAI_API_KEY");
+        String geminiKey = EnvConfig.get("GEMINI_API_KEY");
 
+        GeminiService gemini = new GeminiService(geminiKey);
         DeepSeekService deepSeek = new DeepSeekService(deepSeekKey);
-        AIServiceRouter aiRouter = new AIServiceRouter(deepSeek);
+
+        AIServiceRouter aiRouter = new AIServiceRouter(deepSeek, gemini);
 
         App botApp = new App();
 

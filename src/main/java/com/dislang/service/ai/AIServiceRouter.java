@@ -7,8 +7,8 @@ public class AIServiceRouter {
 
     private final Map<String, IAIService> services;
 
-    public AIServiceRouter(IAIService deepseek) {
-        this.services = Map.of("deepseek", deepseek);
+    public AIServiceRouter(IAIService deepseek, IAIService gemini) {
+        this.services = Map.of("deepseek", deepseek, "gemini", gemini);
     }
 
     public void ask(
@@ -20,6 +20,7 @@ public class AIServiceRouter {
             modelName,
             services.get("deepseek")
         );
+        System.out.println("🤖 Đang dùng Model: " + service.getProviderName());
         service.ask(prompt, callback);
     }
 }
