@@ -2,19 +2,14 @@ package com.dislang;
 
 import com.dislang.commands.*;
 import com.dislang.config.EnvConfig;
-import com.dislang.core.ICommand;
+import com.dislang.core.BotListener;
+import com.dislang.core.CommandManager;
 import com.dislang.service.ai.AIServiceRouter;
 import com.dislang.service.ai.impl.*;
-import java.util.HashMap;
-import java.util.Map;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class App extends ListenerAdapter {
-
-    private final Map<String, ICommand> commands = new HashMap<>();
+public class App {
 
     public static void main(String[] args) {
         String deepSeekKey = EnvConfig.get("OPENAI_API_KEY");
@@ -25,13 +20,15 @@ public class App extends ListenerAdapter {
 
         AIServiceRouter aiRouter = new AIServiceRouter(deepSeek, gemini);
 
-        App botApp = new App();
+        CommandManager commandManager = new CommandManager();
 
-        botApp.registerCommand(new AskCommand(aiRouter));
+        commandManager.addCommand(new AskCommand(aiRouter));
+
+        BotListener botListener = new BotListener(commandManager);
 
         String token = EnvConfig.get("DISCORD_TOKEN");
         JDA jda = JDABuilder.createDefault(token)
-            .addEventListeners(botApp)
+            .addEventListeners(botListener)
             .build();
 
         try {
@@ -39,13 +36,7 @@ public class App extends ListenerAdapter {
 
             jda
                 .updateCommands()
-                .addCommands(
-                    botApp.commands
-                        .values()
-                        .stream()
-                        .map(ICommand::getCommandData)
-                        .toList()
-                )
+                .addCommands(commandManager.getAllCommandData())
                 .queue();
 
             System.out.println("BOT da online");
@@ -53,18 +44,6 @@ public class App extends ListenerAdapter {
             System.out.println(
                 "BOT online khong thanh cong, loi: " + e.getMessage()
             );
-        }
-    }
-
-    private void registerCommand(ICommand cmd) {
-        commands.put(cmd.getName(), cmd);
-    }
-
-    @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        ICommand cmd = commands.get(event.getName());
-        if (cmd != null) {
-            cmd.handle(event);
         }
     }
 }

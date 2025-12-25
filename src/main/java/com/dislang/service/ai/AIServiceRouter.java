@@ -1,14 +1,23 @@
 package com.dislang.service.ai;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class AIServiceRouter {
 
-    private final Map<String, IAIService> services;
+    private final Map<String, IAIService> services = new HashMap<>();
 
-    public AIServiceRouter(IAIService deepseek, IAIService gemini) {
-        this.services = Map.of("deepseek", deepseek, "gemini", gemini);
+    public AIServiceRouter(IAIService... aiServices) {
+        for (IAIService service : aiServices) {
+            // Tự động lấy tên từ service để làm Key
+            // Ví dụ: deepseek.getProviderName() trả về "deepseek"
+            this.services.put(service.getProviderName(), service);
+
+            System.out.println(
+                "🔌 Đã nạp AI Service: " + service.getProviderName()
+            );
+        }
     }
 
     public void ask(
