@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: dislang-postgres
+    environment:
+      POSTGRES_DB: dislang_db
+      POSTGRES_USER: lime_admin
+      POSTGRES_PASSWORD: super_password_123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dislang-network
+
+volumes:
+  postgres_data:
+
+networks:
+  dislang-network:

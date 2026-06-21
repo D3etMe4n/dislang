@@ -34,3 +34,7 @@ bin/
 dependency-reduced-pom.xml
 
 .settings
+
+
+.gradle/
+build/
